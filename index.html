@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulador de Ondas en una Cuerda</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .controls { margin-bottom: 20px; }
+        .controls label { display: block; margin-top: 10px; }
+        canvas { border: 1px solid black; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+</head>
+<body>
+    <h1>Simulador de Ondas en una Cuerda</h1>
+    <div class="controls">
+        <label>Frecuencia (Hz): <input type="number" id="frequency" value="1" step="0.1" min="0.1" max="10"></label>
+        <label>Amplitud (m): <input type="number" id="amplitude" value="1" step="0.1" min="0.1" max="2"></label>
+        <label>Tensión (N): <input type="number" id="tension" value="1" step="0.1" min="0.1" max="10"></label>
+        <button onclick="startSimulation()">Iniciar Simulación</button>
+        <button onclick="pauseSimulation()">Pausar Simulación</button>
+    </div>
+    <div id="simulation"></div>
+
+    <script>
+        let frequency, amplitude, tension;
+        let angularFrequency, waveNumber, waveSpeed;
+        let time = 0;
+        let interval;
+        let paused = false;
+        
+        function setup() {
+            let canvas = createCanvas(800, 400);
+            canvas.parent('simulation');
+        }
+
+        function draw() {
+            background(220);
+            translate(0, height / 2);
+            stroke(0);
+            noFill();
+
+            beginShape();
+            for (let x = 0; x < width; x += 10) {
+                let y = amplitude * sin(waveNumber * x - angularFrequency * time);
+                vertex(x, y);
+            }
+            endShape();
+            
+            if (!paused) {
+                time += 0.05;
+            }
+        }
+
+        function startSimulation() {
+            frequency = parseFloat(document.getElementById('frequency').value);
+            amplitude = parseFloat(document.getElementById('amplitude').value);
+            tension = parseFloat(document.getElementById('tension').value);
+            waveSpeed = Math.sqrt(tension);
+            waveNumber = (2 * PI * frequency) / waveSpeed;
+            angularFrequency = 2 * PI * frequency;
+            paused = false;
+        }
+
+        function pauseSimulation() {
+            paused = !paused;
+        }
+    </script>
+</body>
+</html>
+
